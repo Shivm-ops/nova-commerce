@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
+import { API_URL } from "@/config";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { z } from "zod";
 import ProductCard, { ProductCardSkeleton } from "@/components/ProductCard";
@@ -34,7 +35,7 @@ function ProductsPage() {
 
   useEffect(() => {
     console.log("Fetching products...");
-    fetch("http://localhost:8000/products")
+    fetch(`${API_URL}/products`)
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();

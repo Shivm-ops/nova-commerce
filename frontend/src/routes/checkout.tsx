@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { API_URL } from "@/config";
 import { useCart } from "@/context/CartContext";
 import { ArrowLeft, CreditCard, ShieldCheck, Truck } from "lucide-react";
 
@@ -26,7 +27,7 @@ function CheckoutPage() {
     e.preventDefault();
     setIsProcessing(true);
     try {
-      const response = await fetch("http://localhost:8000/orders", {
+      const response = await fetch(`${API_URL}/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

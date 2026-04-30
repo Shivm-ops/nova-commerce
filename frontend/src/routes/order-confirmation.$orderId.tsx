@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle, Download, Home, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
+import { API_URL } from "@/config";
 
 export const Route = createFileRoute("/order-confirmation/$orderId")({
   component: OrderConfirmationPage,
@@ -12,7 +13,7 @@ function OrderConfirmationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/orders`)
+    fetch(`${API_URL}/orders`)
       .then(res => res.json())
       .then(data => {
         const found = data.find((o: any) => o.id === Number(orderId));
