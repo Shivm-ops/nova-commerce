@@ -28,23 +28,38 @@ function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState(1500);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
 
   useEffect(() => { setQ(search.q ?? ""); }, [search.q]);
+
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(t);
+    console.log("Fetching products...");
+    fetch("http://localhost:8000/products")
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Products loaded:", data.length);
+        setDbProducts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setLoading(false);
+      });
   }, []);
 
   const category = search.category;
 
   const filtered = useMemo(() => {
-    return products.filter((p) => {
+    return dbProducts.filter((p) => {
       if (category && p.category !== category) return false;
       if (p.price > maxPrice) return false;
       if (q && !p.name.toLowerCase().includes(q.toLowerCase())) return false;
       return true;
     });
-  }, [category, maxPrice, q]);
+  }, [dbProducts, category, maxPrice, q]);
 
   const setCategory = (slug?: string) =>
     navigate({ search: (prev) => ({ ...prev, category: slug }) });
@@ -122,7 +137,7 @@ function ProductsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 animate-fade-in">
-              {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+              {filtered.map((p) => <ProductCard key={p.id} product={{ ...p, id: String(p.id) }} />)}
             </div>
           )}
         </div>

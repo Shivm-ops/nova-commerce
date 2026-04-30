@@ -76,9 +76,12 @@ function CartPage() {
             <div className="flex justify-between"><dt className="text-muted-foreground">Shipping</dt><dd>{shipping === 0 ? <span className="text-success">Free</span> : `$${shipping}`}</dd></div>
             <div className="pt-3 border-t border-border flex justify-between text-base font-semibold"><dt>Total</dt><dd className="font-display text-2xl">${total.toLocaleString()}</dd></div>
           </dl>
-          <button className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-medium text-primary-foreground shadow-elegant hover:opacity-90 transition">
+          <Link 
+            to="/checkout"
+            className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-medium text-primary-foreground shadow-elegant hover:opacity-90 transition"
+          >
             Checkout <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
           <p className="mt-3 text-xs text-center text-muted-foreground">Secure checkout · Encrypted payment</p>
         </aside>
       </div>
