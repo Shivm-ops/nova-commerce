@@ -14,8 +14,19 @@ export const Route = createFileRoute("/")({
   }),
 });
 
+import { useState, useEffect } from "react";
+import { API_URL } from "@/config";
+
 function Home() {
-  const featured = products.slice(0, 8);
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/products`)
+      .then((res) => res.json())
+      .then((data) => setDbProducts(data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <div>
       {/* Hero */}
@@ -102,7 +113,7 @@ function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-          {featured.map((p) => <ProductCard key={p.id} product={p} />)}
+          {dbProducts.slice(0, 8).map((p) => <ProductCard key={p.id} product={{ ...p, id: String(p.id) }} />)}
         </div>
       </section>
 

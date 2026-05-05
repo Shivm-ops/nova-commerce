@@ -4,12 +4,22 @@ import { Star, ShoppingBag, Truck, Shield, Heart, ArrowLeft } from "lucide-react
 import { products, reviews } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 
+import { API_URL } from "@/config";
+
 export const Route = createFileRoute("/products/$productId")({
   component: ProductDetail,
-  loader: ({ params }) => {
-    const product = products.find((p) => p.id === params.productId);
-    if (!product) throw notFound();
-    return { product };
+  loader: async ({ params }) => {
+    try {
+      const res = await fetch(`${API_URL}/products`);
+      if (!res.ok) throw new Error("Failed to fetch products");
+      const allProducts = await res.json();
+      const product = allProducts.find((p: any) => String(p.id) === params.productId);
+      if (!product) throw notFound();
+      return { product };
+    } catch (e) {
+      // Fallback or handle error
+      throw notFound();
+    }
   },
   notFoundComponent: () => (
     <div className="mx-auto max-w-3xl px-4 py-24 text-center">
