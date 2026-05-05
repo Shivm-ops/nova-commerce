@@ -60,5 +60,5 @@ jobs:
             # We trim any hidden newlines or spaces from the secret
             export DATABASE_URL=$(echo "${{ secrets.DATABASE_URL }}" | tr -d '\n' | tr -d ' ')
             export VITE_API_URL="http://${{ secrets.EC2_HOST }}:8000"
-            docker-compose pull
-            docker-compose up -d
+            docker compose pull
+            docker compose up -d
