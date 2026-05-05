@@ -95,11 +95,23 @@ A fully automated pipeline handles the build, test, and deployment phases:
 
 ---
 
-## 📈 Future Roadmap
-- [ ] Implement Multi-stage Docker builds for production optimization.
-- [ ] Add Terraform scripts for Infrastructure as Code (IaC).
+- [x] Implement Multi-stage Docker builds for production optimization.
+- [x] Add Terraform scripts for Infrastructure as Code (IaC).
 - [ ] Integrate Prometheus & Grafana for real-time monitoring.
 - [ ] Implement Redis for session caching.
+
+---
+
+## 🛠️ Infrastructure Management (Terraform)
+
+The infrastructure is managed using Terraform in the `terraform/` directory.
+
+### Quick Start:
+1. `cd terraform`
+2. `terraform init`
+3. `terraform apply`
+
+For a detailed guide, see the [Terraform Walkthrough](file:///Users/shivam/.gemini/antigravity/brain/95e44d70-5bca-4198-846f-434ee30f31dd/walkthrough.md).
 
 ---
 
