@@ -57,7 +57,8 @@ jobs:
             mkdir -p ~/nova-commerce
             cd ~/nova-commerce
             # We pass the secrets as environment variables to docker compose
-            export DATABASE_URL="${{ secrets.DATABASE_URL }}"
+            # We trim any hidden newlines or spaces from the secret
+            export DATABASE_URL=$(echo "${{ secrets.DATABASE_URL }}" | tr -d '\n' | tr -d ' ')
             export VITE_API_URL="http://${{ secrets.EC2_HOST }}:8000"
             docker-compose pull
             docker-compose up -d
