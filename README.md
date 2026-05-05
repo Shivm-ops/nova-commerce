@@ -8,7 +8,27 @@ Nova Commerce is a high-performance, containerized e-commerce application design
 
 ## 🏗️ Architecture Overview
 
-The project is architected as a set of decoupled services orchestrated via **Docker Compose** and deployed on **AWS infrastructure**.
+The project is architected as a set of decoupled services orchestrated via **Docker Compose** and deployed on **AWS infrastructure** using **Terraform**.
+
+```mermaid
+graph TD
+    User([User/Browser]) -->|HTTP :80| EC2
+    
+    subgraph AWS [AWS Cloud Infrastructure]
+        subgraph EC2_Node [EC2 Instance - Ubuntu]
+            FE[Frontend Container<br/>React/Vite]
+            BE[Backend Container<br/>FastAPI]
+            FE <-->|API Calls :8000| BE
+        end
+        
+        RDS[(AWS RDS<br/>PostgreSQL 16)]
+        
+        BE <-->|Port 5432| RDS
+    end
+    
+    GH[GitHub Actions] -->|SSH Auto-Deploy| EC2_Node
+    TF[Terraform] -->|Provisions| AWS
+```
 
 ### 💻 Tech Stack
 
@@ -102,16 +122,36 @@ A fully automated pipeline handles the build, test, and deployment phases:
 
 ---
 
-## 🛠️ Infrastructure Management (Terraform)
+## 🛠️ Infrastructure as Code (Terraform)
 
-The infrastructure is managed using Terraform in the `terraform/` directory.
+Instead of manually clicking through the AWS Console, the entire cloud infrastructure is codified using **Terraform**. This ensures reproducibility, scalability, and disaster recovery.
 
-### Quick Start:
+### What Terraform Provisions:
+- **AWS EC2 Instance (`t2.micro`)**: The main web server, bootstrapped with a `user_data` script that automatically installs Docker and Docker Compose V2.
+- **AWS RDS PostgreSQL (`db.t3.micro`)**: A fully managed, secure relational database instance.
+- **Security Groups**: Granular firewall rules allowing HTTP/SSH traffic to the EC2, and restricting database access *only* to the EC2 instance.
+
+### Example Configuration (`main.tf` snippet)
+```hcl
+resource "aws_db_instance" "nova_db" {
+  allocated_storage      = 20
+  engine                 = "postgres"
+  engine_version         = "16.3"
+  instance_class         = "db.t3.micro"
+  db_name                = "nova_commerce"
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+  skip_final_snapshot    = true
+}
+```
+
+### How to Deploy the Infrastructure:
 1. `cd terraform`
-2. `terraform init`
-3. `terraform apply`
+2. `terraform init` (Initializes the provider)
+3. `terraform plan` (Previews the changes)
+4. `terraform apply` (Provisions the AWS resources)
 
-For a detailed guide, see the [Terraform Walkthrough](file:///Users/shivam/.gemini/antigravity/brain/95e44d70-5bca-4198-846f-434ee30f31dd/walkthrough.md).
+![Terraform Output](./Screenshots/terraform%20output.png)
+
 
 ---
 
